@@ -17,6 +17,7 @@ This implementation provides:
 - ✅ All eight operators (`{}`, `{+}`, `{#}`, `{.}`, `{/}`, `{;}`, `{?}`, `{&}`)
 - ✅ List and associative array support
 - ✅ Modifiers (prefix `:n` and explode `*`)
+- ✅ **Returns RFC_3986.URI** for type safety and correctness
 - ✅ Swift 6 strict concurrency support
 - ✅ Full Sendable conformance
 - ✅ Comprehensive test coverage (89 tests, 106 RFC examples)
@@ -43,7 +44,8 @@ import RFC_6570
 
 let template = try RFC_6570.Template("/users/{id}/posts")
 let uri = try template.expand(variables: ["id": "123"])
-// Result: "/users/123/posts"
+// Result: RFC_3986.URI("/users/123/posts")
+print(uri.value) // "/users/123/posts"
 ```
 
 ### Convenience String Expansion
@@ -53,7 +55,7 @@ For simple string-only variables, use the convenient overload:
 ```swift
 let template = try RFC_6570.Template("/users/{id}/posts/{postId}")
 let uri = try template.expand(["id": "123", "postId": "456"])
-// Result: "/users/123/posts/456"
+// Result: RFC_3986.URI("/users/123/posts/456")
 ```
 
 ### Expand to URL
@@ -79,7 +81,25 @@ let uri = try template.expand(variables: [
     "page": "1",
     "limit": "50"
 ])
-// Result: "/search?q=swift&page=1&limit=50"
+// Result: RFC_3986.URI("/search?q=swift&page=1&limit=50")
+```
+
+### RFC 3986 URI Integration
+
+Template expansion returns `RFC_3986.URI` for type safety:
+
+```swift
+let template = try RFC_6570.Template("/users/{id}")
+let uri: RFC_3986.URI = try template.expand(["id": "123"])
+
+// Access the URI string
+print(uri.value) // "/users/123"
+
+// URI references support relative and absolute URIs
+uri.isRelative // true (no scheme)
+
+// Convert to Foundation URL when needed
+let url = try URL(template: template, variables: ["id": "123"])
 ```
 
 ### List Values
