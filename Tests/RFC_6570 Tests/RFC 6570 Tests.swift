@@ -204,7 +204,7 @@ struct RFC_6570_Tests {
     func testSimpleStringExpansion(template: String, expected: String) throws {
         let tpl = try RFC_6570.Template(template)
         let result = try tpl.expand(variables: Self.standardVars)
-        #expect(result == expected)
+        #expect(result.value == expected)
     }
 
     // MARK: - 3.2.3 Reserved Expansion: {+var}
@@ -231,7 +231,7 @@ struct RFC_6570_Tests {
     func testReservedExpansion(template: String, expected: String) throws {
         let tpl = try RFC_6570.Template(template)
         let result = try tpl.expand(variables: Self.standardVars)
-        #expect(result == expected)
+        #expect(result.value == expected)
     }
 
     // MARK: - 3.2.4 Fragment Expansion: {#var}
@@ -253,7 +253,7 @@ struct RFC_6570_Tests {
     func testFragmentExpansion(template: String, expected: String) throws {
         let tpl = try RFC_6570.Template(template)
         let result = try tpl.expand(variables: Self.standardVars)
-        #expect(result == expected)
+        #expect(result.value == expected)
     }
 
     // MARK: - 3.2.5 Label Expansion with Dot-Prefix: {.var}
@@ -277,7 +277,7 @@ struct RFC_6570_Tests {
     func testLabelExpansion(template: String, expected: String) throws {
         let tpl = try RFC_6570.Template(template)
         let result = try tpl.expand(variables: Self.standardVars)
-        #expect(result == expected)
+        #expect(result.value == expected)
     }
 
     // MARK: - 3.2.6 Path Segment Expansion: {/var}
@@ -301,7 +301,7 @@ struct RFC_6570_Tests {
     func testPathSegmentExpansion(template: String, expected: String) throws {
         let tpl = try RFC_6570.Template(template)
         let result = try tpl.expand(variables: Self.standardVars)
-        #expect(result == expected)
+        #expect(result.value == expected)
     }
 
     // MARK: - 3.2.7 Path-Style Parameter Expansion: {;var}
@@ -324,7 +324,7 @@ struct RFC_6570_Tests {
     func testPathStyleParameterExpansion(template: String, expected: String) throws {
         let tpl = try RFC_6570.Template(template)
         let result = try tpl.expand(variables: Self.standardVars)
-        #expect(result == expected)
+        #expect(result.value == expected)
     }
 
     // MARK: - 3.2.8 Form-Style Query Expansion: {?var}
@@ -344,7 +344,7 @@ struct RFC_6570_Tests {
     func testFormStyleQueryExpansion(template: String, expected: String) throws {
         let tpl = try RFC_6570.Template(template)
         let result = try tpl.expand(variables: Self.standardVars)
-        #expect(result == expected)
+        #expect(result.value == expected)
     }
 
     // MARK: - 3.2.9 Form-Style Query Continuation: {&var}
@@ -364,7 +364,7 @@ struct RFC_6570_Tests {
     func testFormStyleQueryContinuation(template: String, expected: String) throws {
         let tpl = try RFC_6570.Template(template)
         let result = try tpl.expand(variables: Self.standardVars)
-        #expect(result == expected)
+        #expect(result.value == expected)
     }
 }
 

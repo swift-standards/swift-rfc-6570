@@ -7,6 +7,9 @@ import OrderedCollections
 extension RFC_6570.Template {
     /// Expands the template with the given variables
     ///
+    /// Returns a URI reference as defined by RFC 3986.
+    /// Result may be an absolute URI or a relative reference depending on the template.
+    ///
     /// Example:
     /// ```swift
     /// let template = try Template("/users/{id}/posts{?page,limit}")
@@ -15,13 +18,13 @@ extension RFC_6570.Template {
     ///     "page": "1",
     ///     "limit": "50"
     /// ])
-    /// // Result: "/users/123/posts?page=1&limit=50"
+    /// // Result: URI("/users/123/posts?page=1&limit=50")
     /// ```
     ///
     /// - Parameter variables: Dictionary mapping variable names to their values
-    /// - Returns: The expanded URI string
+    /// - Returns: The expanded URI reference
     /// - Throws: `RFC_6570.Error` if expansion fails
-    public func expand(variables: [String: RFC_6570.VariableValue]) throws -> String {
+    public func expand(variables: [String: RFC_6570.VariableValue]) throws -> RFC_3986.URI {
         var result = ""
 
         for component in components {
@@ -35,7 +38,9 @@ extension RFC_6570.Template {
             }
         }
 
-        return result
+        // RFC 6570 expansion always produces valid URI references (per RFC 3986 Section 4.1)
+        // Use unchecked initializer for performance - our percent-encoding guarantees validity
+        return RFC_3986.URI(unchecked: result)
     }
 
     /// Expands a single expression

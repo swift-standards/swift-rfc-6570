@@ -18,7 +18,7 @@ struct AdditionalComplianceTests {
             "list": .list(["red", "green", "blue"])
         ])
         // Prefix should not truncate the list, entire list should be output
-        #expect(result == "red,green,blue")
+        #expect(result.value == "red,green,blue")
     }
 
     // Test max-length validation (should be 1-4 digits per RFC)
@@ -26,7 +26,7 @@ struct AdditionalComplianceTests {
     func testPrefixMaxDigits() throws {
         let template = try RFC_6570.Template("{var:9999}")
         let result = try template.expand(variables: ["var": "test"])
-        #expect(result == "test")
+        #expect(result.value == "test")
     }
 
     // Test that both modifiers cannot be combined
@@ -45,7 +45,7 @@ struct AdditionalComplianceTests {
         let template = try RFC_6570.Template("{#var}")
         let reserved = ":/?#[]@!$&'()*+,;="
         let result = try template.expand(variables: ["var": .string(reserved)])
-        #expect(result == "#:/?#[]@!$&'()*+,;=")
+        #expect(result.value == "#:/?#[]@!$&'()*+,;=")
     }
 
     // Test that variable values remain static
@@ -53,7 +53,7 @@ struct AdditionalComplianceTests {
     func testVariableValueConsistency() throws {
         let template = try RFC_6570.Template("{var}{var}{var}")
         let result = try template.expand(variables: ["var": "test"])
-        #expect(result == "testtesttest")
+        #expect(result.value == "testtesttest")
     }
 
     // Test comma in varspec list
@@ -65,7 +65,7 @@ struct AdditionalComplianceTests {
             "b": "2",
             "c": "3"
         ])
-        #expect(result == "?a=1&b=2&c=3")
+        #expect(result.value == "?a=1&b=2&c=3")
     }
 
     // Test that literal text is preserved
@@ -76,7 +76,7 @@ struct AdditionalComplianceTests {
             "path": "users",
             "query": "active"
         ])
-        #expect(result == "http://example.com/users?query=active")
+        #expect(result.value == "http://example.com/users?query=active")
     }
 
     // Test semicolon operator behavior with lists
@@ -86,7 +86,7 @@ struct AdditionalComplianceTests {
         let result = try template.expand(variables: [
             "list": .list(["a", "b", "c"])
         ])
-        #expect(result == ";list=a;list=b;list=c")
+        #expect(result.value == ";list=a;list=b;list=c")
     }
 
     // Test that pct-encoded characters in variable names work
@@ -94,7 +94,7 @@ struct AdditionalComplianceTests {
     func testPercentEncodedVarName() throws {
         let template = try RFC_6570.Template("{var%20name}")
         let result = try template.expand(variables: ["var%20name": "value"])
-        #expect(result == "value")
+        #expect(result.value == "value")
     }
 
     // Test case sensitivity of variable names
@@ -106,6 +106,6 @@ struct AdditionalComplianceTests {
             "var": "B",
             "VAR": "C"
         ])
-        #expect(result == "ABC")
+        #expect(result.value == "ABC")
     }
 }

@@ -13,7 +13,7 @@ struct FinalValidationTests {
         let template = try RFC_6570.Template("{var:2}")
         let result = try template.expand(variables: ["var": "你好"])
         // Should encode both characters (first 2 Unicode code points)
-        #expect(result == "%E4%BD%A0%E5%A5%BD")
+        #expect(result.value == "%E4%BD%A0%E5%A5%BD")
     }
     
     // Test prefix with percent character
@@ -21,7 +21,7 @@ struct FinalValidationTests {
     func testPrefixWithPercent() throws {
         let template = try RFC_6570.Template("{var:2}")
         let result = try template.expand(variables: ["var": "50%"])
-        #expect(result == "50")
+        #expect(result.value == "50")
     }
     
     // Test that modifier applies only to its variable
@@ -32,7 +32,7 @@ struct FinalValidationTests {
             "x": "hello",
             "y": "world"
         ])
-        #expect(result == "he,world")
+        #expect(result.value == "he,world")
     }
     
     // Test prefix with exact length match
@@ -40,7 +40,7 @@ struct FinalValidationTests {
     func testPrefixExactLength() throws {
         let template = try RFC_6570.Template("{var:5}")
         let result = try template.expand(variables: ["var": "hello"])
-        #expect(result == "hello")
+        #expect(result.value == "hello")
     }
     
     // Verify that percent-encoding follows RFC 3986
@@ -49,7 +49,7 @@ struct FinalValidationTests {
         let template = try RFC_6570.Template("{var}")
         let result = try template.expand(variables: ["var": "hello world"])
         // Per RFC 3986, hex digits should be uppercase
-        #expect(result == "hello%20world")
+        #expect(result.value == "hello%20world")
     }
     
     // Test list with single element
@@ -59,7 +59,7 @@ struct FinalValidationTests {
         let result = try template.expand(variables: [
             "list": .list(["single"])
         ])
-        #expect(result == "single")
+        #expect(result.value == "single")
     }
     
     // Test dict with single pair
@@ -69,7 +69,7 @@ struct FinalValidationTests {
         let result = try template.expand(variables: [
             "keys": .dictionary(["key": "value"])
         ])
-        #expect(result == "?key=value")
+        #expect(result.value == "?key=value")
     }
     
     // Test that prefix modifier doesn't affect dict
@@ -80,7 +80,7 @@ struct FinalValidationTests {
             "keys": .dictionary(["a": "1", "b": "2"])
         ])
         // Should output full dictionary, not truncated
-        #expect(result == "a,1,b,2")
+        #expect(result.value == "a,1,b,2")
     }
     
     // Verify explode with single list element
@@ -90,7 +90,7 @@ struct FinalValidationTests {
         let result = try template.expand(variables: [
             "list": .list(["single"])
         ])
-        #expect(result == "?list=single")
+        #expect(result.value == "?list=single")
     }
     
     // Test that tilde is not encoded (unreserved)
@@ -98,6 +98,6 @@ struct FinalValidationTests {
     func testTildeUnencoded() throws {
         let template = try RFC_6570.Template("{var}")
         let result = try template.expand(variables: ["var": "~user"])
-        #expect(result == "~user")
+        #expect(result.value == "~user")
     }
 }

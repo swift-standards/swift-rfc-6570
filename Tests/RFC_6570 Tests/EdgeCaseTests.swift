@@ -11,14 +11,14 @@ struct EdgeCaseTests {
     func testPercentEncoding() throws {
         let template = try RFC_6570.Template("{var}")
         let result = try template.expand(variables: ["var": "50%"])
-        #expect(result == "50%25")
+        #expect(result.value == "50%25")
     }
 
     @Test("Percent character in reserved expansion")
     func testPercentInReserved() throws {
         let template = try RFC_6570.Template("{+var}")
         let result = try template.expand(variables: ["var": "50%"])
-        #expect(result == "50%25")
+        #expect(result.value == "50%25")
     }
 
     @Test("Space must be encoded as %20")
@@ -38,7 +38,7 @@ struct EdgeCaseTests {
         let template = try RFC_6570.Template("{var}")
         let unreserved = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~"
         let result = try template.expand(["var": unreserved])
-        #expect(result == unreserved)
+        #expect(result.value == unreserved)
     }
 
     @Test("Reserved characters encoded in normal expansion")
@@ -46,7 +46,7 @@ struct EdgeCaseTests {
         let template = try RFC_6570.Template("{var}")
         let result = try template.expand(variables: ["var": ":/?#[]@!$&'()*+,;="])
         // All these should be percent-encoded
-        #expect(result.contains("%"))
+        #expect(result.value.contains("%"))
     }
 
     @Test("Reserved characters allowed in reserved expansion")
@@ -55,7 +55,7 @@ struct EdgeCaseTests {
         let reserved = ":/?#[]@!$&'()*+,;="
         let result = try template.expand(["var": reserved])
         // These should NOT be encoded in reserved expansion (except space if present)
-        #expect(result == reserved)
+        #expect(result.value == reserved)
     }
 
     @Test("Exclamation mark in reserved expansion")
@@ -89,7 +89,7 @@ struct EdgeCaseTests {
     func testPrefixLargerThanString() throws {
         let template = try RFC_6570.Template("{var:100}")
         let result = try template.expand(variables: ["var": "short"])
-        #expect(result == "short")
+        #expect(result.value == "short")
     }
 
     // MARK: - Undefined Value Tests
@@ -98,28 +98,28 @@ struct EdgeCaseTests {
     func testEmptyStringIsDefined() throws {
         let template = try RFC_6570.Template("{?var}")
         let result = try template.expand(variables: ["var": ""])
-        #expect(result == "?var=")
+        #expect(result.value == "?var=")
     }
 
     @Test("Empty list is undefined")
     func testEmptyListUndefined() throws {
         let template = try RFC_6570.Template("{?list}")
         let result = try template.expand(variables: ["list": .list([])])
-        #expect(result == "")
+        #expect(result.value == "")
     }
 
     @Test("Empty dictionary is undefined")
     func testEmptyDictUndefined() throws {
         let template = try RFC_6570.Template("{?dict}")
         let result = try template.expand(variables: ["dict": .dictionary([:])])
-        #expect(result == "")
+        #expect(result.value == "")
     }
 
     @Test("Missing variable is undefined")
     func testMissingVariable() throws {
         let template = try RFC_6570.Template("{?var}")
         let result = try template.expand(variables: [:])
-        #expect(result == "")
+        #expect(result.value == "")
     }
 
     // MARK: - Template Parsing Error Tests
@@ -151,14 +151,14 @@ struct EdgeCaseTests {
     func testUnderscoreInVariableName() throws {
         let template = try RFC_6570.Template("{var_name}")
         let result = try template.expand(variables: ["var_name": "test"])
-        #expect(result == "test")
+        #expect(result.value == "test")
     }
 
     @Test("Variable name with dot is valid")
     func testDotInVariableName() throws {
         let template = try RFC_6570.Template("{var.name}")
         let result = try template.expand(variables: ["var.name": "test"])
-        #expect(result == "test")
+        #expect(result.value == "test")
     }
 
     @Test("Variable name with percent-encoding is valid")
@@ -166,7 +166,7 @@ struct EdgeCaseTests {
         // RFC 6570 Section 2.3: variable names MAY contain pct-encoded characters
         let template = try RFC_6570.Template("{var%20name}")
         let result = try template.expand(variables: ["var%20name": "test"])
-        #expect(result == "test")
+        #expect(result.value == "test")
     }
 
     @Test("Variable name with hyphen is invalid")
@@ -205,21 +205,21 @@ struct EdgeCaseTests {
     func testMultipleUndefinedVars() throws {
         let template = try RFC_6570.Template("{?x,y,z}")
         let result = try template.expand(variables: ["y": "2"])
-        #expect(result == "?y=2")
+        #expect(result.value == "?y=2")
     }
 
     @Test("All undefined variables produce empty result")
     func testAllUndefinedVars() throws {
         let template = try RFC_6570.Template("{?x,y,z}")
         let result = try template.expand(variables: [:])
-        #expect(result == "")
+        #expect(result.value == "")
     }
 
     @Test("Fragment operator with empty value")
     func testFragmentWithEmpty() throws {
         let template = try RFC_6570.Template("{#var}")
         let result = try template.expand(variables: ["var": ""])
-        #expect(result == "#")
+        #expect(result.value == "#")
     }
 
     // MARK: - List and Dictionary Edge Cases
@@ -228,7 +228,7 @@ struct EdgeCaseTests {
     func testListWithEmptyElements() throws {
         let template = try RFC_6570.Template("{list}")
         let result = try template.expand(variables: ["list": .list(["a", "", "c"])])
-        #expect(result == "a,,c")
+        #expect(result.value == "a,,c")
     }
 
     @Test("Dictionary with empty values")
@@ -238,14 +238,14 @@ struct EdgeCaseTests {
             "keys": .dictionary(["a": "1", "b": "", "c": "3"])
         ])
         // Should handle empty values in dictionary
-        #expect(result.contains("b="))
+        #expect(result.value.contains("b="))
     }
 
     @Test("List explode with path operator")
     func testListExplodeWithPath() throws {
         let template = try RFC_6570.Template("{/list*}")
         let result = try template.expand(variables: ["list": .list(["a", "b", "c"])])
-        #expect(result == "/a/b/c")
+        #expect(result.value == "/a/b/c")
     }
 
     // MARK: - Special Character Combinations
@@ -254,21 +254,21 @@ struct EdgeCaseTests {
     func testSlashInPathSegment() throws {
         let template = try RFC_6570.Template("{/var}")
         let result = try template.expand(variables: ["var": "a/b"])
-        #expect(result == "/a%2Fb")
+        #expect(result.value == "/a%2Fb")
     }
 
     @Test("Equals in query value is encoded")
     func testEqualsInQueryValue() throws {
         let template = try RFC_6570.Template("{?var}")
         let result = try template.expand(variables: ["var": "a=b"])
-        #expect(result == "?var=a%3Db")
+        #expect(result.value == "?var=a%3Db")
     }
 
     @Test("Ampersand in query value is encoded")
     func testAmpersandInQueryValue() throws {
         let template = try RFC_6570.Template("{?var}")
         let result = try template.expand(variables: ["var": "a&b"])
-        #expect(result == "?var=a%26b")
+        #expect(result.value == "?var=a%26b")
     }
 
     // MARK: - Multiple Expressions in One Template
@@ -281,7 +281,7 @@ struct EdgeCaseTests {
             "query": "test",
             "fragment": "section"
         ])
-        #expect(result == "/search?query=test#section")
+        #expect(result.value == "/search?query=test#section")
     }
 
     @Test("Adjacent expressions")
@@ -291,6 +291,6 @@ struct EdgeCaseTests {
             "var1": "hello",
             "var2": "world"
         ])
-        #expect(result == "helloworld")
+        #expect(result.value == "helloworld")
     }
 }

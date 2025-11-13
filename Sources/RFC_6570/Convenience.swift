@@ -7,13 +7,15 @@ extension RFC_6570.Template {
     /// Expands the template with string values
     ///
     /// Convenience method that automatically wraps strings in VariableValue
+    /// and returns a URI reference.
     ///
     /// Example:
     /// ```swift
     /// let template = try Template("/users/{id}")
     /// let uri = try template.expand(["id": "123"])
+    /// // Returns: RFC_3986.URI("/users/123")
     /// ```
-    public func expand(_ variables: [String: String]) throws -> String {
+    public func expand(_ variables: [String: String]) throws -> RFC_3986.URI {
         let wrapped = variables.mapValues { RFC_6570.VariableValue.string($0) }
         return try expand(variables: wrapped)
     }
@@ -44,9 +46,9 @@ extension URL {
     /// ```
     public init(template: String, variables: [String: String]) throws {
         let tpl = try RFC_6570.Template(template)
-        let uriString = try tpl.expand(variables)
-        guard let url = URL(string: uriString) else {
-            throw RFC_6570.Error.expansionFailed("Result is not a valid URL: \(uriString)")
+        let uri = try tpl.expand(variables)
+        guard let url = URL(string: uri.value) else {
+            throw RFC_6570.Error.expansionFailed("Result is not a valid URL: \(uri.value)")
         }
         self = url
     }
@@ -54,9 +56,9 @@ extension URL {
     /// Creates a URL by expanding a URI template with variable values
     public init(template: String, variables: [String: RFC_6570.VariableValue]) throws {
         let tpl = try RFC_6570.Template(template)
-        let uriString = try tpl.expand(variables: variables)
-        guard let url = URL(string: uriString) else {
-            throw RFC_6570.Error.expansionFailed("Result is not a valid URL: \(uriString)")
+        let uri = try tpl.expand(variables: variables)
+        guard let url = URL(string: uri.value) else {
+            throw RFC_6570.Error.expansionFailed("Result is not a valid URL: \(uri.value)")
         }
         self = url
     }
@@ -69,18 +71,18 @@ extension URL {
     /// let url = try URL(template: template, variables: ["id": "123"])
     /// ```
     public init(template: RFC_6570.Template, variables: [String: String]) throws {
-        let uriString = try template.expand(variables)
-        guard let url = URL(string: uriString) else {
-            throw RFC_6570.Error.expansionFailed("Result is not a valid URL: \(uriString)")
+        let uri = try template.expand(variables)
+        guard let url = URL(string: uri.value) else {
+            throw RFC_6570.Error.expansionFailed("Result is not a valid URL: \(uri.value)")
         }
         self = url
     }
 
     /// Creates a URL by expanding an existing template with variable values
     public init(template: RFC_6570.Template, variables: [String: RFC_6570.VariableValue]) throws {
-        let uriString = try template.expand(variables: variables)
-        guard let url = URL(string: uriString) else {
-            throw RFC_6570.Error.expansionFailed("Result is not a valid URL: \(uriString)")
+        let uri = try template.expand(variables: variables)
+        guard let url = URL(string: uri.value) else {
+            throw RFC_6570.Error.expansionFailed("Result is not a valid URL: \(uri.value)")
         }
         self = url
     }

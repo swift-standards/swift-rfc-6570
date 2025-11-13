@@ -15,7 +15,7 @@ struct PrefixModifierTests {
         
         // Test with ASCII
         var result = try template.expand(variables: ["var": "value"])
-        #expect(result == "val")
+        #expect(result.value == "val")
         
         // Test with emoji (each emoji is 1 character)
         result = try template.expand(variables: ["var": "👨‍👩‍👧‍👦ABC"])
@@ -29,7 +29,7 @@ struct PrefixModifierTests {
     func testPrefixMaxValue() throws {
         let template = try RFC_6570.Template("{var:9999}")
         let result = try template.expand(variables: ["var": "test"])
-        #expect(result == "test")
+        #expect(result.value == "test")
     }
     
     // Test invalid prefix values
