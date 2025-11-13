@@ -1,5 +1,6 @@
 import Foundation
 import RFC_3986
+import OrderedCollections
 
 // MARK: - Template Expansion
 
@@ -46,17 +47,13 @@ extension RFC_6570.Template {
         var results: [String] = []
 
         for varspec in expression.varspecs {
-            guard let value = variables[varspec.name] else {
+            guard let value = variables[varspec.name], value.isDefined else {
                 // Undefined variables are skipped per RFC 6570
                 continue
             }
 
-            guard value.isDefined else {
-                // Empty values are skipped
-                continue
-            }
-
             let expanded = try expandVarSpec(varspec, value: value, operator: op)
+            // Include all expansions, even empty ones (for comma-separated contexts)
             results.append(expanded)
         }
 
@@ -82,9 +79,13 @@ extension RFC_6570.Template {
             return try expandString(str, varspec: varspec, operator: op)
 
         case .list(let list):
+            // Empty lists are still skipped
+            guard !list.isEmpty else { return "" }
             return try expandList(list, varspec: varspec, operator: op)
 
         case .dictionary(let dict):
+            // Empty dictionaries are still skipped
+            guard !dict.isEmpty else { return "" }
             return try expandDictionary(dict, varspec: varspec, operator: op)
         }
     }
@@ -99,17 +100,30 @@ extension RFC_6570.Template {
 
         // Apply prefix modifier if present
         if case .prefix(let length) = varspec.modifier {
-            let index = value.index(value.startIndex, offsetBy: min(length, value.count))
-            value = String(value[..<index])
+            value = String(value.prefix(length))
         }
 
         // Encode the value
         let encoded = percentEncode(value, allowReserved: op.allowReserved)
 
         // Add variable name for named operators
-        if op.named && !value.isEmpty {
-            return "\(varspec.name)=\(encoded)"
+        if op.named {
+            // Different operators handle empty values differently:
+            // - Semicolon operator (;): empty values produce just the name: "name"
+            // - Query operators (?, &): empty values produce "name="
+            if value.isEmpty && op == .parameter {
+                // Semicolon operator: no "=" for empty values
+                return varspec.name
+            } else if value.isEmpty {
+                // Query operators (query, continuation): include "=" for empty values
+                return "\(varspec.name)="
+            } else {
+                // Non-empty values: always include "="
+                return "\(varspec.name)=\(encoded)"
+            }
         } else {
+            // For non-named operators, return encoded value even if empty
+            // This allows empty strings to contribute to comma-separated lists
             return encoded
         }
     }
@@ -146,17 +160,16 @@ extension RFC_6570.Template {
 
     /// Expands a dictionary value
     private func expandDictionary(
-        _ dict: [String: String],
+        _ dict: OrderedDictionary<String, String>,
         varspec: VarSpec,
         operator op: RFC_6570.Operator
     ) throws -> String {
         guard !dict.isEmpty else { return "" }
 
-        let sorted = dict.sorted { $0.key < $1.key }
-
+        // OrderedDictionary preserves insertion order
         if case .explode = varspec.modifier {
             // Explode modifier: key1=val1&key2=val2
-            let pairs = sorted.map { key, value in
+            let pairs = dict.map { key, value in
                 let encodedKey = percentEncode(key, allowReserved: op.allowReserved)
                 let encodedValue = percentEncode(value, allowReserved: op.allowReserved)
                 return "\(encodedKey)=\(encodedValue)"
@@ -164,7 +177,7 @@ extension RFC_6570.Template {
             return pairs.joined(separator: op.separator)
         } else {
             // No explode: comma-separated key,value pairs
-            let pairs = sorted.flatMap { key, value in
+            let pairs = dict.flatMap { key, value in
                 let encodedKey = percentEncode(key, allowReserved: op.allowReserved)
                 let encodedValue = percentEncode(value, allowReserved: op.allowReserved)
                 return [encodedKey, encodedValue]

@@ -24,12 +24,14 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/swift-standards/swift-rfc-3986.git", from: "0.0.1"),
+        .package(url: "https://github.com/apple/swift-collections.git", from: "1.1.0"),
     ],
     targets: [
         .target(
             name: .rfc6570,
             dependencies: [
                 .product(name: "RFC 3986", package: "swift-rfc-3986"),
+                .product(name: "OrderedCollections", package: "swift-collections"),
             ]
         ),
         .testTarget(

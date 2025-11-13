@@ -1,5 +1,6 @@
 import Foundation
 import RFC_3986
+import OrderedCollections
 
 /// Implementation of RFC 6570: URI Template
 ///
@@ -154,7 +155,8 @@ extension RFC_6570 {
         var separator: String {
             switch self {
             case .simple, .reserved, .fragment: return ","
-            case .label, .path: return "."
+            case .label: return "."
+            case .path: return "/"
             case .parameter: return ";"
             case .query, .continuation: return "&"
             }
@@ -205,12 +207,16 @@ extension RFC_6570 {
         case list([String])
 
         /// An associative array (dictionary) of string key-value pairs
-        case dictionary([String: String])
+        /// Note: Uses OrderedDictionary to preserve insertion order for RFC test compatibility
+        case dictionary(OrderedDictionary<String, String>)
 
-        /// Returns whether this value is defined (non-nil)
+        /// Returns whether this value is defined per RFC 6570
+        ///
+        /// Note: Empty strings ARE defined. Only missing/nil values are undefined.
+        /// Empty lists and dictionaries are treated as undefined.
         var isDefined: Bool {
             switch self {
-            case .string(let s): return !s.isEmpty
+            case .string: return true  // Empty strings are defined!
             case .list(let l): return !l.isEmpty
             case .dictionary(let d): return !d.isEmpty
             }
@@ -313,6 +319,18 @@ extension RFC_6570.VariableValue: ExpressibleByArrayLiteral {
 
 extension RFC_6570.VariableValue: ExpressibleByDictionaryLiteral {
     public init(dictionaryLiteral elements: (String, String)...) {
-        self = .dictionary(Dictionary(uniqueKeysWithValues: elements))
+        self = .dictionary(OrderedDictionary(uniqueKeysWithValues: elements))
+    }
+}
+
+// MARK: - Convenience Initializers
+
+extension RFC_6570.VariableValue {
+    /// Creates a dictionary value from a Swift Dictionary
+    /// - Parameter dict: The dictionary to convert
+    /// - Note: Keys will be sorted alphabetically for consistent output
+    public init(dictionary: [String: String]) {
+        let ordered = OrderedDictionary(uniqueKeysWithValues: dictionary.sorted { $0.key < $1.key })
+        self = .dictionary(ordered)
     }
 }
