@@ -102,7 +102,10 @@ extension RFC_6570.Template {
         // Check for prefix modifier
         else if let colonIndex = name.firstIndex(of: ":") {
             let prefixString = name[name.index(after: colonIndex)...]
-            guard let prefixLength = Int(prefixString), prefixLength > 0 else {
+            // RFC 6570 Section 2.4.1: max-length is 1 to 4 digits (max value 9999)
+            guard prefixString.count >= 1 && prefixString.count <= 4,
+                  let prefixLength = Int(prefixString),
+                  prefixLength > 0 else {
                 throw RFC_6570.Error.invalidModifier("Invalid prefix length: \(prefixString)")
             }
             modifier = .prefix(prefixLength)
