@@ -58,15 +58,16 @@ let uri = try template.expand(["id": "123", "postId": "456"])
 
 ### Expand to URL
 
-Get a Foundation `URL` directly:
+Create a Foundation `URL` directly using initializer extensions:
 
 ```swift
-let template = try RFC_6570.Template("https://api.example.com/users/{id}")
-let url = try template.expandToURL(["id": "123"])
+// Create URL from template string
+let url = try URL(template: "https://api.example.com/users/{id}", variables: ["id": "123"])
 // Result: URL("https://api.example.com/users/123")
 
-// Or create URL directly from template
-let url = try URL(template: "https://api.example.com/users/{id}", variables: ["id": "123"])
+// Or expand an existing template to URL
+let template = try RFC_6570.Template("https://api.example.com/users/{id}")
+let url = try URL(template: template, variables: ["id": "123"])
 ```
 
 ### Query Parameters
