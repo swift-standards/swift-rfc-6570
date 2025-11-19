@@ -105,7 +105,7 @@ extension RFC_6570.Template: CustomStringConvertible {
 
 extension RFC_6570.Template: CustomDebugStringConvertible {
     public var debugDescription: String {
-        "RFC_6570.Template(\(value))"
+        "RFC 6570.Template(\(value))"
     }
 }
 
