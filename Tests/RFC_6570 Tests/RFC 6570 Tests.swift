@@ -1,40 +1,40 @@
 import Testing
 @testable import RFC_6570
 
-@Suite("RFC 6570 URI Template Tests")
-struct RFC_6570_Tests {
+@Suite
+struct `RFC 6570 URI Template Tests` {
 
     // MARK: - Template Parsing Tests
 
-    @Test("Parse simple template")
-    func testSimpleTemplate() throws {
+    @Test
+    func `Parse simple template`() throws {
         let template = try RFC_6570.Template("/{var}")
         #expect(template.value == "/{var}")
         #expect(template.components.count == 2)
     }
 
-    @Test("Parse template with literals and expressions")
-    func testMixedTemplate() throws {
+    @Test
+    func `Parse template with literals and expressions`() throws {
         let template = try RFC_6570.Template("/users/{id}/posts")
         // Should be: "/users/", "{id}", "/posts"
         #expect(template.components.count == 3)
     }
 
-    @Test("Parse template with query parameters")
-    func testQueryTemplate() throws {
+    @Test
+    func `Parse template with query parameters`() throws {
         let template = try RFC_6570.Template("/search{?q,page}")
         #expect(template.value == "/search{?q,page}")
     }
 
-    @Test("Invalid template throws error")
-    func testInvalidTemplate() {
+    @Test
+    func `Invalid template throws error`() {
         #expect(throws: RFC_6570.Error.self) {
             try RFC_6570.Template("{invalid")
         }
     }
 
-    @Test("Empty expression throws error")
-    func testEmptyExpression() {
+    @Test
+    func `Empty expression throws error`() {
         #expect(throws: RFC_6570.Error.self) {
             try RFC_6570.Template("{}")
         }
@@ -42,15 +42,15 @@ struct RFC_6570_Tests {
 
     // MARK: - Basic Expansion Tests
 
-    @Test("Expand simple variable")
-    func testSimpleExpansion() throws {
+    @Test
+    func `Expand simple variable`() throws {
         let template = try RFC_6570.Template("/{var}")
         let uri = try template.expand(variables: ["var": "value"])
         #expect(uri == "/value")
     }
 
-    @Test("Expand multiple variables")
-    func testMultipleVariables() throws {
+    @Test
+    func `Expand multiple variables`() throws {
         let template = try RFC_6570.Template("/users/{id}/posts/{postId}")
         let uri = try template.expand(variables: [
             "id": "123",
@@ -59,8 +59,8 @@ struct RFC_6570_Tests {
         #expect(uri == "/users/123/posts/456")
     }
 
-    @Test("Expand with undefined variable")
-    func testUndefinedVariable() throws {
+    @Test
+    func `Expand with undefined variable`() throws {
         let template = try RFC_6570.Template("/{var}/{other}")
         let uri = try template.expand(variables: ["var": "value"])
         // Undefined variables are skipped
@@ -69,37 +69,37 @@ struct RFC_6570_Tests {
 
     // MARK: - Operator Tests
 
-    @Test("Simple expansion operator")
-    func testSimpleOperator() throws {
+    @Test
+    func `Simple expansion operator`() throws {
         let template = try RFC_6570.Template("{var}")
         let uri = try template.expand(variables: ["var": "value"])
         #expect(uri == "value")
     }
 
-    @Test("Reserved expansion operator")
-    func testReservedOperator() throws {
+    @Test
+    func `Reserved expansion operator`() throws {
         let template = try RFC_6570.Template("{+var}")
         let uri = try template.expand(variables: ["var": "hello world"])
         // Space should be encoded even in reserved expansion
         #expect(uri == "hello%20world")
     }
 
-    @Test("Fragment expansion operator")
-    func testFragmentOperator() throws {
+    @Test
+    func `Fragment expansion operator`() throws {
         let template = try RFC_6570.Template("{#var}")
         let uri = try template.expand(variables: ["var": "section"])
         #expect(uri == "#section")
     }
 
-    @Test("Query expansion operator")
-    func testQueryOperator() throws {
+    @Test
+    func `Query expansion operator`() throws {
         let template = try RFC_6570.Template("{?var}")
         let uri = try template.expand(variables: ["var": "value"])
         #expect(uri == "?var=value")
     }
 
-    @Test("Query with multiple variables")
-    func testQueryMultipleVars() throws {
+    @Test
+    func `Query with multiple variables`() throws {
         let template = try RFC_6570.Template("{?x,y}")
         let uri = try template.expand(variables: [
             "x": "1",
@@ -110,8 +110,8 @@ struct RFC_6570_Tests {
 
     // MARK: - List Expansion Tests
 
-    @Test("List with simple expansion")
-    func testListSimple() throws {
+    @Test
+    func `List with simple expansion`() throws {
         let template = try RFC_6570.Template("{list}")
         let uri = try template.expand(variables: [
             "list": .list(["red", "green", "blue"])
@@ -119,8 +119,8 @@ struct RFC_6570_Tests {
         #expect(uri == "red,green,blue")
     }
 
-    @Test("List with explode modifier")
-    func testListExplode() throws {
+    @Test
+    func `List with explode modifier`() throws {
         let template = try RFC_6570.Template("{list*}")
         let uri = try template.expand(variables: [
             "list": .list(["red", "green", "blue"])
@@ -128,8 +128,8 @@ struct RFC_6570_Tests {
         #expect(uri == "red,green,blue")
     }
 
-    @Test("List with query and explode")
-    func testListQueryExplode() throws {
+    @Test
+    func `List with query and explode`() throws {
         let template = try RFC_6570.Template("{?list*}")
         let uri = try template.expand(variables: [
             "list": .list(["red", "green", "blue"])
@@ -139,8 +139,8 @@ struct RFC_6570_Tests {
 
     // MARK: - Dictionary Expansion Tests
 
-    @Test("Dictionary with query and explode")
-    func testDictQueryExplode() throws {
+    @Test
+    func `Dictionary with query and explode`() throws {
         let template = try RFC_6570.Template("{?dict*}")
         let uri = try template.expand(variables: [
             "dict": .dictionary(["lang": "en", "sort": "date"])
@@ -151,8 +151,8 @@ struct RFC_6570_Tests {
 
     // MARK: - Modifier Tests
 
-    @Test("Prefix modifier")
-    func testPrefixModifier() throws {
+    @Test
+    func `Prefix modifier`() throws {
         let template = try RFC_6570.Template("{var:3}")
         let uri = try template.expand(variables: ["var": "value"])
         #expect(uri == "val")
@@ -182,7 +182,7 @@ struct RFC_6570_Tests {
 
     // MARK: - 3.2.2 Simple String Expansion: {var}
 
-    @Test("RFC 6570 Section 3.2.2 - Simple String Expansion", arguments: [
+    @Test(arguments: [
         ("{var}", "value"),
         ("{hello}", "Hello%20World%21"),
         ("{half}", "50%25"),
@@ -200,7 +200,7 @@ struct RFC_6570_Tests {
         ("{keys}", "semi,%3B,dot,.,comma,%2C"),
         ("{keys*}", "semi=%3B,dot=.,comma=%2C"),
     ])
-    func testSimpleStringExpansion(template: String, expected: String) throws {
+    func `RFC 6570 Section 3.2.2 - Simple String Expansion`(template: String, expected: String) throws {
         let tpl = try RFC_6570.Template(template)
         let result = try tpl.expand(variables: Self.standardVars)
         #expect(result.value == expected)
@@ -208,7 +208,7 @@ struct RFC_6570_Tests {
 
     // MARK: - 3.2.3 Reserved Expansion: {+var}
 
-    @Test("RFC 6570 Section 3.2.3 - Reserved Expansion", arguments: [
+    @Test(arguments: [
         ("{+var}", "value"),
         ("{+hello}", "Hello%20World!"),
         ("{+half}", "50%25"),
@@ -227,7 +227,7 @@ struct RFC_6570_Tests {
         ("{+keys}", "semi,;,dot,.,comma,,"),
         ("{+keys*}", "semi=;,dot=.,comma=,"),
     ])
-    func testReservedExpansion(template: String, expected: String) throws {
+    func `RFC 6570 Section 3.2.3 - Reserved Expansion`(template: String, expected: String) throws {
         let tpl = try RFC_6570.Template(template)
         let result = try tpl.expand(variables: Self.standardVars)
         #expect(result.value == expected)
@@ -235,7 +235,7 @@ struct RFC_6570_Tests {
 
     // MARK: - 3.2.4 Fragment Expansion: {#var}
 
-    @Test("RFC 6570 Section 3.2.4 - Fragment Expansion", arguments: [
+    @Test(arguments: [
         ("{#var}", "#value"),
         ("{#hello}", "#Hello%20World!"),
         ("{#half}", "#50%25"),
@@ -249,7 +249,7 @@ struct RFC_6570_Tests {
         ("{#keys}", "#semi,;,dot,.,comma,,"),
         ("{#keys*}", "#semi=;,dot=.,comma=,"),
     ])
-    func testFragmentExpansion(template: String, expected: String) throws {
+    func `RFC 6570 Section 3.2.4 - Fragment Expansion`(template: String, expected: String) throws {
         let tpl = try RFC_6570.Template(template)
         let result = try tpl.expand(variables: Self.standardVars)
         #expect(result.value == expected)
@@ -257,7 +257,7 @@ struct RFC_6570_Tests {
 
     // MARK: - 3.2.5 Label Expansion with Dot-Prefix: {.var}
 
-    @Test("RFC 6570 Section 3.2.5 - Label Expansion", arguments: [
+    @Test(arguments: [
         ("{.who}", ".fred"),
         ("{.who,who}", ".fred.fred"),
         ("{.half,who}", ".50%25.fred"),
@@ -273,7 +273,7 @@ struct RFC_6570_Tests {
         ("X{.empty_keys}", "X"),
         ("X{.empty_keys*}", "X"),
     ])
-    func testLabelExpansion(template: String, expected: String) throws {
+    func `RFC 6570 Section 3.2.5 - Label Expansion`(template: String, expected: String) throws {
         let tpl = try RFC_6570.Template(template)
         let result = try tpl.expand(variables: Self.standardVars)
         #expect(result.value == expected)
@@ -281,7 +281,7 @@ struct RFC_6570_Tests {
 
     // MARK: - 3.2.6 Path Segment Expansion: {/var}
 
-    @Test("RFC 6570 Section 3.2.6 - Path Segment Expansion", arguments: [
+    @Test(arguments: [
         ("{/who}", "/fred"),
         ("{/who,who}", "/fred/fred"),
         ("{/half,who}", "/50%25/fred"),
@@ -297,7 +297,7 @@ struct RFC_6570_Tests {
         ("{/keys}", "/semi,%3B,dot,.,comma,%2C"),
         ("{/keys*}", "/semi=%3B/dot=./comma=%2C"),
     ])
-    func testPathSegmentExpansion(template: String, expected: String) throws {
+    func `RFC 6570 Section 3.2.6 - Path Segment Expansion`(template: String, expected: String) throws {
         let tpl = try RFC_6570.Template(template)
         let result = try tpl.expand(variables: Self.standardVars)
         #expect(result.value == expected)
@@ -305,7 +305,7 @@ struct RFC_6570_Tests {
 
     // MARK: - 3.2.7 Path-Style Parameter Expansion: {;var}
 
-    @Test("RFC 6570 Section 3.2.7 - Path-Style Parameter Expansion", arguments: [
+    @Test(arguments: [
         ("{;who}", ";who=fred"),
         ("{;half}", ";half=50%25"),
         ("{;empty}", ";empty"),
@@ -320,7 +320,7 @@ struct RFC_6570_Tests {
         ("{;keys}", ";keys=semi,%3B,dot,.,comma,%2C"),
         ("{;keys*}", ";semi=%3B;dot=.;comma=%2C"),
     ])
-    func testPathStyleParameterExpansion(template: String, expected: String) throws {
+    func `RFC 6570 Section 3.2.7 - Path-Style Parameter Expansion`(template: String, expected: String) throws {
         let tpl = try RFC_6570.Template(template)
         let result = try tpl.expand(variables: Self.standardVars)
         #expect(result.value == expected)
@@ -328,7 +328,7 @@ struct RFC_6570_Tests {
 
     // MARK: - 3.2.8 Form-Style Query Expansion: {?var}
 
-    @Test("RFC 6570 Section 3.2.8 - Form-Style Query Expansion", arguments: [
+    @Test(arguments: [
         ("{?who}", "?who=fred"),
         ("{?half}", "?half=50%25"),
         ("{?x,y}", "?x=1024&y=768"),
@@ -340,7 +340,7 @@ struct RFC_6570_Tests {
         ("{?keys}", "?keys=semi,%3B,dot,.,comma,%2C"),
         ("{?keys*}", "?semi=%3B&dot=.&comma=%2C"),
     ])
-    func testFormStyleQueryExpansion(template: String, expected: String) throws {
+    func `RFC 6570 Section 3.2.8 - Form-Style Query Expansion`(template: String, expected: String) throws {
         let tpl = try RFC_6570.Template(template)
         let result = try tpl.expand(variables: Self.standardVars)
         #expect(result.value == expected)
@@ -348,7 +348,7 @@ struct RFC_6570_Tests {
 
     // MARK: - 3.2.9 Form-Style Query Continuation: {&var}
 
-    @Test("RFC 6570 Section 3.2.9 - Form-Style Query Continuation", arguments: [
+    @Test(arguments: [
         ("{&who}", "&who=fred"),
         ("{&half}", "&half=50%25"),
         ("?fixed=yes{&x}", "?fixed=yes&x=1024"),
@@ -360,18 +360,18 @@ struct RFC_6570_Tests {
         ("{&keys}", "&keys=semi,%3B,dot,.,comma,%2C"),
         ("{&keys*}", "&semi=%3B&dot=.&comma=%2C"),
     ])
-    func testFormStyleQueryContinuation(template: String, expected: String) throws {
+    func `RFC 6570 Section 3.2.9 - Form-Style Query Continuation`(template: String, expected: String) throws {
         let tpl = try RFC_6570.Template(template)
         let result = try tpl.expand(variables: Self.standardVars)
         #expect(result.value == expected)
     }
 }
 
-@Suite("URI Template Operators")
-struct OperatorTests {
+@Suite
+struct `URI Template Operators` {
 
-    @Test("All operators have correct prefixes")
-    func testOperatorPrefixes() {
+    @Test
+    func `All operators have correct prefixes`() {
         #expect(RFC_6570.Operator.simple.prefix == "")
         #expect(RFC_6570.Operator.reserved.prefix == "")
         #expect(RFC_6570.Operator.fragment.prefix == "#")
@@ -382,8 +382,8 @@ struct OperatorTests {
         #expect(RFC_6570.Operator.continuation.prefix == "&")
     }
 
-    @Test("All operators have correct separators")
-    func testOperatorSeparators() {
+    @Test
+    func `All operators have correct separators`() {
         #expect(RFC_6570.Operator.simple.separator == ",")
         #expect(RFC_6570.Operator.reserved.separator == ",")
         #expect(RFC_6570.Operator.fragment.separator == ",")
@@ -395,30 +395,30 @@ struct OperatorTests {
     }
 }
 
-@Suite("Variable Value Tests")
-struct VariableTests {
+@Suite
+struct `Variable Value Tests` {
 
-    @Test("String value is defined")
-    func testStringDefined() {
+    @Test
+    func `String value is defined`() {
         let value: RFC_6570.Variable = "hello"
         #expect(value.isDefined)
     }
 
-    @Test("Empty string is defined per RFC 6570")
-    func testEmptyStringIsDefined() {
+    @Test
+    func `Empty string is defined per RFC 6570`() {
         // Per RFC 6570, empty strings ARE defined (only undefined/nil values are undefined)
         let value: RFC_6570.Variable = ""
         #expect(value.isDefined)
     }
 
-    @Test("List value is defined")
-    func testListDefined() {
+    @Test
+    func `List value is defined`() {
         let value: RFC_6570.Variable = ["a", "b", "c"]
         #expect(value.isDefined)
     }
 
-    @Test("Dictionary value is defined")
-    func testDictDefined() {
+    @Test
+    func `Dictionary value is defined`() {
         let value: RFC_6570.Variable = ["key": "value"]
         #expect(value.isDefined)
     }

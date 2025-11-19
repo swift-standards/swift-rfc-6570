@@ -3,12 +3,12 @@
 import Testing
 @testable import RFC_6570
 
-@Suite("Additional RFC 6570 Compliance Tests")
-struct AdditionalComplianceTests {
+@Suite
+struct `Additional RFC 6570 Compliance Tests` {
 
     // Test that prefix modifier doesn't apply to composite values
-    @Test("Prefix modifier should not apply to lists")
-    func testPrefixNotApplicableToList() throws {
+    @Test
+    func `Prefix modifier should not apply to lists`() throws {
         // Per RFC: prefix modifier not applicable to composite values
         // The implementation should either ignore it or the parser should reject it
         // Let's test if parser accepts it (which is fine - it just won't apply)
@@ -21,16 +21,16 @@ struct AdditionalComplianceTests {
     }
 
     // Test max-length validation (should be 1-4 digits per RFC)
-    @Test("Prefix modifier can have up to 4 digits")
-    func testPrefixMaxDigits() throws {
+    @Test
+    func `Prefix modifier can have up to 4 digits`() throws {
         let template = try RFC_6570.Template("{var:9999}")
         let result = try template.expand(variables: ["var": "test"])
         #expect(result.value == "test")
     }
 
     // Test that both modifiers cannot be combined
-    @Test("Cannot combine prefix and explode modifiers")
-    func testCannotCombineModifiers() {
+    @Test
+    func `Cannot combine prefix and explode modifiers`() {
         // RFC doesn't explicitly forbid this, but {var:3*} doesn't make sense
         // Let's see what the parser does
         #expect(throws: RFC_6570.Error.self) {
@@ -39,8 +39,8 @@ struct AdditionalComplianceTests {
     }
 
     // Test reserved character set completeness
-    @Test("All reserved characters in fragment expansion")
-    func testAllReservedChars() throws {
+    @Test
+    func `All reserved characters in fragment expansion`() throws {
         let template = try RFC_6570.Template("{#var}")
         let reserved = ":/?#[]@!$&'()*+,;="
         let result = try template.expand(variables: ["var": .string(reserved)])
@@ -48,16 +48,16 @@ struct AdditionalComplianceTests {
     }
 
     // Test that variable values remain static
-    @Test("Multiple uses of same variable")
-    func testVariableConsistency() throws {
+    @Test
+    func `Multiple uses of same variable`() throws {
         let template = try RFC_6570.Template("{var}{var}{var}")
         let result = try template.expand(variables: ["var": "test"])
         #expect(result.value == "testtesttest")
     }
 
     // Test comma in varspec list
-    @Test("Multiple variables in one expression")
-    func testMultipleVarsInExpression() throws {
+    @Test
+    func `Multiple variables in one expression`() throws {
         let template = try RFC_6570.Template("{?a,b,c}")
         let result = try template.expand(variables: [
             "a": "1",
@@ -68,8 +68,8 @@ struct AdditionalComplianceTests {
     }
 
     // Test that literal text is preserved
-    @Test("Literal text between expressions")
-    func testLiteralPreservation() throws {
+    @Test
+    func `Literal text between expressions`() throws {
         let template = try RFC_6570.Template("http://example.com{/path}{?query}")
         let result = try template.expand(variables: [
             "path": "users",
@@ -79,8 +79,8 @@ struct AdditionalComplianceTests {
     }
 
     // Test semicolon operator behavior with lists
-    @Test("Semicolon operator with list explode")
-    func testSemicolonListExplode() throws {
+    @Test
+    func `Semicolon operator with list explode`() throws {
         let template = try RFC_6570.Template("{;list*}")
         let result = try template.expand(variables: [
             "list": .list(["a", "b", "c"])
@@ -89,16 +89,16 @@ struct AdditionalComplianceTests {
     }
 
     // Test that pct-encoded characters in variable names work
-    @Test("Percent-encoded variable names")
-    func testPercentEncodedVarName() throws {
+    @Test
+    func `Percent-encoded variable names`() throws {
         let template = try RFC_6570.Template("{var%20name}")
         let result = try template.expand(variables: ["var%20name": "value"])
         #expect(result.value == "value")
     }
 
     // Test case sensitivity of variable names
-    @Test("Variable names are case-sensitive")
-    func testCaseSensitiveVarNames() throws {
+    @Test
+    func `Variable names are case-sensitive`() throws {
         let template = try RFC_6570.Template("{Var}{var}{VAR}")
         let result = try template.expand(variables: [
             "Var": "A",

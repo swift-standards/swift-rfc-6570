@@ -1,12 +1,12 @@
 import Testing
 @testable import RFC_6570
 
-@Suite("Final Edge Case Validation")
-struct FinalValidationTests {
+@Suite
+struct `Final Edge Case Validation` {
     
     // Verify prefix modifier is applied BEFORE percent-encoding (per RFC)
-    @Test("Prefix applied before encoding")
-    func testPrefixBeforeEncoding() throws {
+    @Test
+    func `Prefix applied before encoding`() throws {
         // If we have "你好世界" and apply :6, it should take first 6 chars THEN encode
         // Not encode first then take 6 bytes
         let template = try RFC_6570.Template("{var:2}")
@@ -16,16 +16,16 @@ struct FinalValidationTests {
     }
     
     // Test prefix with percent character
-    @Test("Prefix with percent in string")
-    func testPrefixWithPercent() throws {
+    @Test
+    func `Prefix with percent in string`() throws {
         let template = try RFC_6570.Template("{var:2}")
         let result = try template.expand(variables: ["var": "50%"])
         #expect(result.value == "50")
     }
     
     // Test that modifier applies only to its variable
-    @Test("Modifier applies to single variable only")
-    func testModifierScope() throws {
+    @Test
+    func `Modifier applies to single variable only`() throws {
         let template = try RFC_6570.Template("{x:2,y}")
         let result = try template.expand(variables: [
             "x": "hello",
@@ -35,16 +35,16 @@ struct FinalValidationTests {
     }
     
     // Test prefix with exact length match
-    @Test("Prefix with exact length")
-    func testPrefixExactLength() throws {
+    @Test
+    func `Prefix with exact length`() throws {
         let template = try RFC_6570.Template("{var:5}")
         let result = try template.expand(variables: ["var": "hello"])
         #expect(result.value == "hello")
     }
     
     // Verify that percent-encoding follows RFC 3986
-    @Test("Percent encoding produces uppercase hex")
-    func testUppercaseHex() throws {
+    @Test
+    func `Percent encoding produces uppercase hex`() throws {
         let template = try RFC_6570.Template("{var}")
         let result = try template.expand(variables: ["var": "hello world"])
         // Per RFC 3986, hex digits should be uppercase
@@ -52,8 +52,8 @@ struct FinalValidationTests {
     }
     
     // Test list with single element
-    @Test("List with single element")
-    func testSingleElementList() throws {
+    @Test
+    func `List with single element`() throws {
         let template = try RFC_6570.Template("{list}")
         let result = try template.expand(variables: [
             "list": .list(["single"])
@@ -62,8 +62,8 @@ struct FinalValidationTests {
     }
     
     // Test dict with single pair
-    @Test("Dictionary with single pair")
-    func testSinglePairDict() throws {
+    @Test
+    func `Dictionary with single pair`() throws {
         let template = try RFC_6570.Template("{?keys*}")
         let result = try template.expand(variables: [
             "keys": .dictionary(["key": "value"])
@@ -72,8 +72,8 @@ struct FinalValidationTests {
     }
     
     // Test that prefix modifier doesn't affect dict
-    @Test("Prefix modifier ignored for dictionary")
-    func testPrefixIgnoredForDict() throws {
+    @Test
+    func `Prefix modifier ignored for dictionary`() throws {
         let template = try RFC_6570.Template("{keys:3}")
         let result = try template.expand(variables: [
             "keys": .dictionary(["a": "1", "b": "2"])
@@ -83,8 +83,8 @@ struct FinalValidationTests {
     }
     
     // Verify explode with single list element
-    @Test("Explode with single list element")
-    func testExplodeSingleElement() throws {
+    @Test
+    func `Explode with single list element`() throws {
         let template = try RFC_6570.Template("{?list*}")
         let result = try template.expand(variables: [
             "list": .list(["single"])
@@ -93,8 +93,8 @@ struct FinalValidationTests {
     }
     
     // Test that tilde is not encoded (unreserved)
-    @Test("Tilde passes through unencoded")
-    func testTildeUnencoded() throws {
+    @Test
+    func `Tilde passes through unencoded`() throws {
         let template = try RFC_6570.Template("{var}")
         let result = try template.expand(variables: ["var": "~user"])
         #expect(result.value == "~user")
