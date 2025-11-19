@@ -1,5 +1,4 @@
 import Testing
-import Foundation
 @testable import RFC_6570
 
 @Suite("RFC 6570 URI Template Tests")
@@ -162,7 +161,7 @@ struct RFC_6570_Tests {
     // MARK: - RFC 6570 Appendix A - Comprehensive Test Suite
 
     /// Standard variable definitions from RFC 6570 Section 3.2
-    private static let standardVars: [String: RFC_6570.VariableValue] = [
+    private static let standardVars: [String: RFC_6570.Variable] = [
         "var": "value",
         "hello": "Hello World!",
         "half": "50%",
@@ -397,30 +396,30 @@ struct OperatorTests {
 }
 
 @Suite("Variable Value Tests")
-struct VariableValueTests {
+struct VariableTests {
 
     @Test("String value is defined")
     func testStringDefined() {
-        let value: RFC_6570.VariableValue = "hello"
+        let value: RFC_6570.Variable = "hello"
         #expect(value.isDefined)
     }
 
     @Test("Empty string is defined per RFC 6570")
     func testEmptyStringIsDefined() {
         // Per RFC 6570, empty strings ARE defined (only undefined/nil values are undefined)
-        let value: RFC_6570.VariableValue = ""
+        let value: RFC_6570.Variable = ""
         #expect(value.isDefined)
     }
 
     @Test("List value is defined")
     func testListDefined() {
-        let value: RFC_6570.VariableValue = ["a", "b", "c"]
+        let value: RFC_6570.Variable = ["a", "b", "c"]
         #expect(value.isDefined)
     }
 
     @Test("Dictionary value is defined")
     func testDictDefined() {
-        let value: RFC_6570.VariableValue = ["key": "value"]
+        let value: RFC_6570.Variable = ["key": "value"]
         #expect(value.isDefined)
     }
 }

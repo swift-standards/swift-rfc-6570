@@ -1,6 +1,5 @@
 // swift-tools-version:6.0
 
-import Foundation
 import PackageDescription
 
 extension String {
@@ -14,10 +13,10 @@ extension Target.Dependency {
 let package = Package(
     name: "swift-rfc-6570",
     platforms: [
-        .macOS(.v14),
-        .iOS(.v17),
-        .tvOS(.v17),
-        .watchOS(.v10)
+        .macOS(.v15),
+        .iOS(.v18),
+        .tvOS(.v18),
+        .watchOS(.v11)
     ],
     products: [
         .library(name: .rfc6570, targets: [.rfc6570]),

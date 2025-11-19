@@ -1,5 +1,4 @@
 import Testing
-import Foundation
 @testable import RFC_6570
 
 @Suite("Prefix Modifier Deep Dive")

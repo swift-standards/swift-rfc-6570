@@ -1,5 +1,4 @@
 import Testing
-import Foundation
 @testable import RFC_6570
 
 @Suite("RFC 6570 Edge Cases and Compliance Tests")

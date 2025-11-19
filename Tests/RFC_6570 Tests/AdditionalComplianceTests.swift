@@ -1,7 +1,6 @@
 // Test specific edge cases mentioned in RFC 6570
 
 import Testing
-import Foundation
 @testable import RFC_6570
 
 @Suite("Additional RFC 6570 Compliance Tests")
@@ -50,7 +49,7 @@ struct AdditionalComplianceTests {
 
     // Test that variable values remain static
     @Test("Multiple uses of same variable")
-    func testVariableValueConsistency() throws {
+    func testVariableConsistency() throws {
         let template = try RFC_6570.Template("{var}{var}{var}")
         let result = try template.expand(variables: ["var": "test"])
         #expect(result.value == "testtesttest")

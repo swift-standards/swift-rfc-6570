@@ -1,4 +1,4 @@
-import Foundation
+import INCITS_4_1986
 
 // MARK: - Template Parsing
 
@@ -128,7 +128,7 @@ extension RFC_6570.Template {
         guard !name.isEmpty else { return false }
 
         for char in name {
-            if char.isLetter || char.isNumber || char == "_" || char == "." {
+            if char.isASCIIAlphanumeric || char == "_" || char == "." {
                 continue
             } else if char == "%" {
                 // Could validate percent-encoding here if needed
