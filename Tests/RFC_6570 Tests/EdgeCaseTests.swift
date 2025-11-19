@@ -28,8 +28,8 @@ struct EdgeCaseTests {
         let resultNormal = try templateNormal.expand(variables: ["var": "hello world"])
         let resultReserved = try templateReserved.expand(variables: ["var": "hello world"])
 
-        #expect(resultNormal == "hello%20world")
-        #expect(resultReserved == "hello%20world")
+        #expect(resultNormal.value == "hello%20world")
+        #expect(resultReserved.value == "hello%20world")
     }
 
     @Test("Unreserved characters pass through unencoded")
@@ -65,8 +65,8 @@ struct EdgeCaseTests {
         let resultNormal = try templateNormal.expand(variables: ["var": "Hello!"])
         let resultReserved = try templateReserved.expand(variables: ["var": "Hello!"])
 
-        #expect(resultNormal == "Hello%21")
-        #expect(resultReserved == "Hello!")
+        #expect(resultNormal.value == "Hello%21")
+        #expect(resultReserved.value == "Hello!")
     }
 
     // MARK: - Prefix Modifier Tests
@@ -77,11 +77,11 @@ struct EdgeCaseTests {
 
         // ASCII characters
         let resultAscii = try template.expand(variables: ["var": "Hello"])
-        #expect(resultAscii == "Hel")
+        #expect(resultAscii.value == "Hel")
 
         // Unicode characters (each is one code point)
         let resultUnicode = try template.expand(variables: ["var": "你好世界"])
-        #expect(resultUnicode == "%E4%BD%A0%E5%A5%BD%E4%B8%96")
+        #expect(resultUnicode.value == "%E4%BD%A0%E5%A5%BD%E4%B8%96")
     }
 
     @Test("Prefix modifier larger than string length")
