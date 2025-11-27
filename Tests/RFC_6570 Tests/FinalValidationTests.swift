@@ -1,9 +1,10 @@
 import Testing
+
 @testable import RFC_6570
 
 @Suite
 struct `Final Edge Case Validation` {
-    
+
     // Verify prefix modifier is applied BEFORE percent-encoding (per RFC)
     @Test
     func `Prefix applied before encoding`() throws {
@@ -14,7 +15,7 @@ struct `Final Edge Case Validation` {
         // Should encode both characters (first 2 Unicode code points)
         #expect(result.value == "%E4%BD%A0%E5%A5%BD")
     }
-    
+
     // Test prefix with percent character
     @Test
     func `Prefix with percent in string`() throws {
@@ -22,18 +23,18 @@ struct `Final Edge Case Validation` {
         let result = try template.expand(variables: ["var": "50%"])
         #expect(result.value == "50")
     }
-    
+
     // Test that modifier applies only to its variable
     @Test
     func `Modifier applies to single variable only`() throws {
         let template = try RFC_6570.Template("{x:2,y}")
         let result = try template.expand(variables: [
             "x": "hello",
-            "y": "world"
+            "y": "world",
         ])
         #expect(result.value == "he,world")
     }
-    
+
     // Test prefix with exact length match
     @Test
     func `Prefix with exact length`() throws {
@@ -41,7 +42,7 @@ struct `Final Edge Case Validation` {
         let result = try template.expand(variables: ["var": "hello"])
         #expect(result.value == "hello")
     }
-    
+
     // Verify that percent-encoding follows RFC 3986
     @Test
     func `Percent encoding produces uppercase hex`() throws {
@@ -50,7 +51,7 @@ struct `Final Edge Case Validation` {
         // Per RFC 3986, hex digits should be uppercase
         #expect(result.value == "hello%20world")
     }
-    
+
     // Test list with single element
     @Test
     func `List with single element`() throws {
@@ -60,7 +61,7 @@ struct `Final Edge Case Validation` {
         ])
         #expect(result.value == "single")
     }
-    
+
     // Test dict with single pair
     @Test
     func `Dictionary with single pair`() throws {
@@ -70,7 +71,7 @@ struct `Final Edge Case Validation` {
         ])
         #expect(result.value == "?key=value")
     }
-    
+
     // Test that prefix modifier doesn't affect dict
     @Test
     func `Prefix modifier ignored for dictionary`() throws {
@@ -81,7 +82,7 @@ struct `Final Edge Case Validation` {
         // Should output full dictionary, not truncated
         #expect(result.value == "a,1,b,2")
     }
-    
+
     // Verify explode with single list element
     @Test
     func `Explode with single list element`() throws {
@@ -91,7 +92,7 @@ struct `Final Edge Case Validation` {
         ])
         #expect(result.value == "?list=single")
     }
-    
+
     // Test that tilde is not encoded (unreserved)
     @Test
     func `Tilde passes through unencoded`() throws {

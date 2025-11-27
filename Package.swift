@@ -22,13 +22,15 @@ let package = Package(
         .library(name: .rfc6570, targets: [.rfc6570]),
     ],
     dependencies: [
-        .package(url: "https://github.com/swift-standards/swift-rfc-3986.git", from: "0.1.3"),
-        .package(url: "https://github.com/apple/swift-collections.git", from: "1.1.0"),
+        .package(url: "https://github.com/swift-standards/swift-incits-4-1986", from: "0.4.1"),
+        .package(url: "https://github.com/swift-standards/swift-rfc-3986", from: "0.2.1"),
+        .package(url: "https://github.com/apple/swift-collections", from: "1.1.0"),
     ],
     targets: [
         .target(
             name: .rfc6570,
             dependencies: [
+                .product(name: "INCITS 4 1986", package: "swift-incits-4-1986"),
                 .product(name: "RFC 3986", package: "swift-rfc-3986"),
                 .product(name: "OrderedCollections", package: "swift-collections"),
             ]

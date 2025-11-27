@@ -1,4 +1,5 @@
 import Testing
+
 @testable import RFC_6570
 
 @Suite
@@ -54,7 +55,7 @@ struct `RFC 6570 URI Template Tests` {
         let template = try RFC_6570.Template("/users/{id}/posts/{postId}")
         let uri = try template.expand(variables: [
             "id": "123",
-            "postId": "456"
+            "postId": "456",
         ])
         #expect(uri == "/users/123/posts/456")
     }
@@ -103,7 +104,7 @@ struct `RFC 6570 URI Template Tests` {
         let template = try RFC_6570.Template("{?x,y}")
         let uri = try template.expand(variables: [
             "x": "1",
-            "y": "2"
+            "y": "2",
         ])
         #expect(uri == "?x=1&y=2")
     }
@@ -177,7 +178,7 @@ struct `RFC 6570 URI Template Tests` {
         "keys": .dictionary(["semi": ";", "dot": ".", "comma": ","]),
         "dom": .list(["example", "com"]),
         "count": .list(["one", "two", "three"]),
-        "empty_keys": .dictionary([:])
+        "empty_keys": .dictionary([:]),
     ]
 
     // MARK: - 3.2.2 Simple String Expansion: {var}
@@ -200,7 +201,10 @@ struct `RFC 6570 URI Template Tests` {
         ("{keys}", "semi,%3B,dot,.,comma,%2C"),
         ("{keys*}", "semi=%3B,dot=.,comma=%2C"),
     ])
-    func `RFC 6570 Section 3.2.2 - Simple String Expansion`(template: String, expected: String) throws {
+    func `RFC 6570 Section 3.2.2 - Simple String Expansion`(
+        template: String,
+        expected: String
+    ) throws {
         let tpl = try RFC_6570.Template(template)
         let result = try tpl.expand(variables: Self.standardVars)
         #expect(result.value == expected)
@@ -297,7 +301,10 @@ struct `RFC 6570 URI Template Tests` {
         ("{/keys}", "/semi,%3B,dot,.,comma,%2C"),
         ("{/keys*}", "/semi=%3B/dot=./comma=%2C"),
     ])
-    func `RFC 6570 Section 3.2.6 - Path Segment Expansion`(template: String, expected: String) throws {
+    func `RFC 6570 Section 3.2.6 - Path Segment Expansion`(
+        template: String,
+        expected: String
+    ) throws {
         let tpl = try RFC_6570.Template(template)
         let result = try tpl.expand(variables: Self.standardVars)
         #expect(result.value == expected)
@@ -320,7 +327,10 @@ struct `RFC 6570 URI Template Tests` {
         ("{;keys}", ";keys=semi,%3B,dot,.,comma,%2C"),
         ("{;keys*}", ";semi=%3B;dot=.;comma=%2C"),
     ])
-    func `RFC 6570 Section 3.2.7 - Path-Style Parameter Expansion`(template: String, expected: String) throws {
+    func `RFC 6570 Section 3.2.7 - Path-Style Parameter Expansion`(
+        template: String,
+        expected: String
+    ) throws {
         let tpl = try RFC_6570.Template(template)
         let result = try tpl.expand(variables: Self.standardVars)
         #expect(result.value == expected)
@@ -340,7 +350,10 @@ struct `RFC 6570 URI Template Tests` {
         ("{?keys}", "?keys=semi,%3B,dot,.,comma,%2C"),
         ("{?keys*}", "?semi=%3B&dot=.&comma=%2C"),
     ])
-    func `RFC 6570 Section 3.2.8 - Form-Style Query Expansion`(template: String, expected: String) throws {
+    func `RFC 6570 Section 3.2.8 - Form-Style Query Expansion`(
+        template: String,
+        expected: String
+    ) throws {
         let tpl = try RFC_6570.Template(template)
         let result = try tpl.expand(variables: Self.standardVars)
         #expect(result.value == expected)
@@ -360,7 +373,10 @@ struct `RFC 6570 URI Template Tests` {
         ("{&keys}", "&keys=semi,%3B,dot,.,comma,%2C"),
         ("{&keys*}", "&semi=%3B&dot=.&comma=%2C"),
     ])
-    func `RFC 6570 Section 3.2.9 - Form-Style Query Continuation`(template: String, expected: String) throws {
+    func `RFC 6570 Section 3.2.9 - Form-Style Query Continuation`(
+        template: String,
+        expected: String
+    ) throws {
         let tpl = try RFC_6570.Template(template)
         let result = try tpl.expand(variables: Self.standardVars)
         #expect(result.value == expected)

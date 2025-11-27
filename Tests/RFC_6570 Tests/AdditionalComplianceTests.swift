@@ -1,6 +1,7 @@
 // Test specific edge cases mentioned in RFC 6570
 
 import Testing
+
 @testable import RFC_6570
 
 @Suite
@@ -62,7 +63,7 @@ struct `Additional RFC 6570 Compliance Tests` {
         let result = try template.expand(variables: [
             "a": "1",
             "b": "2",
-            "c": "3"
+            "c": "3",
         ])
         #expect(result.value == "?a=1&b=2&c=3")
     }
@@ -73,7 +74,7 @@ struct `Additional RFC 6570 Compliance Tests` {
         let template = try RFC_6570.Template("http://example.com{/path}{?query}")
         let result = try template.expand(variables: [
             "path": "users",
-            "query": "active"
+            "query": "active",
         ])
         #expect(result.value == "http://example.com/users?query=active")
     }
@@ -103,7 +104,7 @@ struct `Additional RFC 6570 Compliance Tests` {
         let result = try template.expand(variables: [
             "Var": "A",
             "var": "B",
-            "VAR": "C"
+            "VAR": "C",
         ])
         #expect(result.value == "ABC")
     }

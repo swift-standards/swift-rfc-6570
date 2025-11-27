@@ -5,8 +5,6 @@
 //  Created by Coen ten Thije Boonkkamp on 19/11/2025.
 //
 
-import OrderedCollections
-
 extension RFC_6570 {
     /// A value that can be used in template expansion
     public enum Variable: Hashable, Sendable {

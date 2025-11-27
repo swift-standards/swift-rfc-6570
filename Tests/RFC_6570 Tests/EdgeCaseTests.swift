@@ -1,4 +1,5 @@
 import Testing
+
 @testable import RFC_6570
 
 @Suite
@@ -278,7 +279,7 @@ struct `RFC 6570 Edge Cases and Compliance Tests` {
         let result = try template.expand(variables: [
             "path": "search",
             "query": "test",
-            "fragment": "section"
+            "fragment": "section",
         ])
         #expect(result.value == "/search?query=test#section")
     }
@@ -288,7 +289,7 @@ struct `RFC 6570 Edge Cases and Compliance Tests` {
         let template = try RFC_6570.Template("{var1}{var2}")
         let result = try template.expand(variables: [
             "var1": "hello",
-            "var2": "world"
+            "var2": "world",
         ])
         #expect(result.value == "helloworld")
     }

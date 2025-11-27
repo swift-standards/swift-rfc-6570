@@ -1,6 +1,3 @@
-import RFC_3986
-import OrderedCollections
-
 /// Implementation of RFC 6570: URI Template
 ///
 /// RFC 6570 defines a simple notation for describing the structure of URIs that includes
@@ -21,13 +18,6 @@ import OrderedCollections
 /// See: https://www.rfc-editor.org/rfc/rfc6570.html
 public enum RFC_6570 {}
 
-
-
 // MARK: - Conformances
 
-
-
-
-
 // MARK: - Convenience Initializers
-

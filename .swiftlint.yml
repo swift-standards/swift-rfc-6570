@@ -3,5 +3,8 @@
 
 parent_config: https://raw.githubusercontent.com/swift-standards/swift-standards/main/.swiftlint.yml
 
-# Package-specific overrides (if needed)
-# Add any swift-rfc-6570 specific rules here
+# Package-specific overrides
+disabled_rules:
+  - empty_string
+  - implicit_optional_initialization
+  - opening_brace

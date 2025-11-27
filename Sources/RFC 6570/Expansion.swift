@@ -1,6 +1,4 @@
-import RFC_3986
 import OrderedCollections
+import RFC_3986
 
 // MARK: - Template Expansion
-
-

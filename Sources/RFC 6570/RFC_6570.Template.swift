@@ -5,9 +5,6 @@
 //  Created by Coen ten Thije Boonkkamp on 19/11/2025.
 //
 
-import RFC_3986
-import OrderedCollections
-
 // MARK: - Core Types
 
 extension RFC_6570 {

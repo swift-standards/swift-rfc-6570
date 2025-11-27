@@ -1,5 +1,3 @@
-import INCITS_4_1986
-
 // MARK: - Template Parsing
 
 extension RFC_6570.Template {
@@ -24,7 +22,9 @@ extension RFC_6570.Template {
 
                 // Find matching closing brace
                 guard let closingIndex = template[index...].firstIndex(of: "}") else {
-                    throw RFC_6570.Error.invalidTemplate("Unclosed expression starting at position \(template.distance(from: template.startIndex, to: index))")
+                    throw RFC_6570.Error.invalidTemplate(
+                        "Unclosed expression starting at position \(template.distance(from: template.startIndex, to: index))"
+                    )
                 }
 
                 // Parse expression
@@ -35,7 +35,9 @@ extension RFC_6570.Template {
 
                 index = template.index(after: closingIndex)
             } else if char == "}" {
-                throw RFC_6570.Error.invalidTemplate("Unexpected '}' at position \(template.distance(from: template.startIndex, to: index))")
+                throw RFC_6570.Error.invalidTemplate(
+                    "Unexpected '}' at position \(template.distance(from: template.startIndex, to: index))"
+                )
             } else {
                 currentLiteral.append(char)
                 index = template.index(after: index)
@@ -64,7 +66,8 @@ extension RFC_6570.Template {
         // Check for operator prefix
         let op: RFC_6570.Operator
         if let first = remaining.first,
-           let foundOperator = RFC_6570.Operator(rawValue: String(first)) {
+            let foundOperator = RFC_6570.Operator(rawValue: String(first))
+        {
             op = foundOperator
             remaining.removeFirst()
         } else {
@@ -104,8 +107,9 @@ extension RFC_6570.Template {
             let prefixString = name[name.index(after: colonIndex)...]
             // RFC 6570 Section 2.4.1: max-length is 1 to 4 digits (max value 9999)
             guard prefixString.count >= 1 && prefixString.count <= 4,
-                  let prefixLength = Int(prefixString),
-                  prefixLength > 0 else {
+                let prefixLength = Int(prefixString),
+                prefixLength > 0
+            else {
                 throw RFC_6570.Error.invalidModifier("Invalid prefix length: \(prefixString)")
             }
             modifier = .prefix(prefixLength)
@@ -128,7 +132,7 @@ extension RFC_6570.Template {
         guard !name.isEmpty else { return false }
 
         for char in name {
-            if char.isASCIIAlphanumeric || char == "_" || char == "." {
+            if char.ascii.isAlphanumeric || char == "_" || char == "." {
                 continue
             } else if char == "%" {
                 // Could validate percent-encoding here if needed
