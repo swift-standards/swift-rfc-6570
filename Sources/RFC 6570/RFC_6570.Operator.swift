@@ -82,3 +82,17 @@ extension RFC_6570 {
         }
     }
 }
+
+extension RFC_6570.Operator {
+    /// Whether this operator includes empty values in output
+    public var includesEmptyValues: Bool {
+        switch self {
+        case .query, .continuation:
+            return true  // Include "=" for empty values
+        case .parameter:
+            return false  // Omit "=" for empty values
+        default:
+            return true
+        }
+    }
+}

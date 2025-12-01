@@ -59,3 +59,30 @@ extension RFC_6570.Variable: ExpressibleByDictionaryLiteral {
         self = .dictionary(OrderedDictionary(uniqueKeysWithValues: elements))
     }
 }
+
+extension RFC_6570.Variable {
+    /// Returns the value as a string if possible
+    public var stringValue: String? {
+        switch self {
+        case .string(let s): return s
+        default: return nil
+        }
+    }
+
+    /// Returns the value as a list if possible
+    public var listValue: [String]? {
+        switch self {
+        case .list(let l): return l
+        default: return nil
+        }
+    }
+
+    /// Returns the value as a dictionary if possible
+    public var dictionaryValue: [String: String]? {
+        switch self {
+        case .dictionary(let d):
+            return Dictionary(uniqueKeysWithValues: d.map { ($0.key, $0.value) })
+        default: return nil
+        }
+    }
+}

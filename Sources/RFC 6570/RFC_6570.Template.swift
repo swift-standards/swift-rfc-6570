@@ -331,3 +331,21 @@ extension RFC_6570.Template {
         }
     }
 }
+
+extension RFC_6570.Template {
+    /// Expands the template with string values
+    ///
+    /// Convenience method that automatically wraps strings in Variable
+    /// and returns a URI reference.
+    ///
+    /// Example:
+    /// ```swift
+    /// let template = try Template("/users/{id}")
+    /// let uri = try template.expand(["id": "123"])
+    /// // Returns: RFC_3986.URI("/users/123")
+    /// ```
+    public func expand(_ variables: [String: String]) throws -> RFC_3986.URI {
+        let wrapped = variables.mapValues { RFC_6570.Variable.string($0) }
+        return try expand(variables: wrapped)
+    }
+}
