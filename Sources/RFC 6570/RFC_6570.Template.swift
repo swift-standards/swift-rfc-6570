@@ -281,7 +281,7 @@ extension RFC_6570.Template {
 
     /// Expands a dictionary value
     private func expandDictionary(
-        _ dict: OrderedDictionary<String, String>,
+        _ dict: Dictionary<String, String>.Ordered,
         varspec: VarSpec,
         operator op: RFC_6570.Operator
     ) throws -> String {

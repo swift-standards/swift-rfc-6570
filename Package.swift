@@ -24,7 +24,7 @@ let package = Package(
     dependencies: [
         .package(path: "../swift-incits-4-1986"),
         .package(path: "../swift-rfc-3986"),
-        .package(url: "https://github.com/apple/swift-collections", from: "1.1.0"),
+        .package(path: "../../swift-primitives/swift-container-primitives"),
     ],
     targets: [
         .target(
@@ -32,7 +32,7 @@ let package = Package(
             dependencies: [
                 .product(name: "INCITS 4 1986", package: "swift-incits-4-1986"),
                 .product(name: "RFC 3986", package: "swift-rfc-3986"),
-                .product(name: "OrderedCollections", package: "swift-collections"),
+                .product(name: "Container Primitives", package: "swift-container-primitives"),
             ]
         ),
         .testTarget(

@@ -16,7 +16,7 @@ extension RFC_6570 {
 
         /// An associative array (dictionary) of string key-value pairs
         /// Note: Uses OrderedDictionary to preserve insertion order for RFC test compatibility
-        case dictionary(OrderedDictionary<String, String>)
+        case dictionary(Dictionary<String, String>.Ordered)
 
         /// Returns whether this value is defined per RFC 6570
         ///
@@ -37,7 +37,7 @@ extension RFC_6570.Variable {
     /// - Parameter dict: The dictionary to convert
     /// - Note: Keys will be sorted alphabetically for consistent output
     public init(dictionary: [String: String]) {
-        let ordered = OrderedDictionary(uniqueKeysWithValues: dictionary.sorted { $0.key < $1.key })
+        let ordered = try! Dictionary<String, String>.Ordered( dictionary.sorted { $0.key < $1.key })
         self = .dictionary(ordered)
     }
 }
@@ -56,7 +56,7 @@ extension RFC_6570.Variable: ExpressibleByArrayLiteral {
 
 extension RFC_6570.Variable: ExpressibleByDictionaryLiteral {
     public init(dictionaryLiteral elements: (String, String)...) {
-        self = .dictionary(OrderedDictionary(uniqueKeysWithValues: elements))
+        self = .dictionary(try! Dictionary<String, String>.Ordered( elements))
     }
 }
 
