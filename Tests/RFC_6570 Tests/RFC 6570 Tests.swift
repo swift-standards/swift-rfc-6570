@@ -175,10 +175,10 @@ struct `RFC 6570 URI Template Tests` {
         "x": "1024",
         "y": "768",
         "list": .list(["red", "green", "blue"]),
-        "keys": .dictionary(["semi": ";", "dot": ".", "comma": ","]),
+        "keys": ["semi": ";", "dot": ".", "comma": ","],
         "dom": .list(["example", "com"]),
         "count": .list(["one", "two", "three"]),
-        "empty_keys": .dictionary([:]),
+        "empty_keys": [:],
     ]
 
     // MARK: - 3.2.2 Simple String Expansion: {var}

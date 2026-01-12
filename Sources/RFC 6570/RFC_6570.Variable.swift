@@ -40,6 +40,13 @@ extension RFC_6570.Variable {
         let ordered = try! Dictionary<String, String>.Ordered( dictionary.sorted { $0.key < $1.key })
         self = .dictionary(ordered)
     }
+
+    /// Creates a dictionary variable from a standard Swift dictionary
+    /// - Parameter dict: The dictionary to convert
+    /// - Note: Keys will be sorted alphabetically for consistent output
+    public static func dictionary(_ dict: [String: String]) -> RFC_6570.Variable {
+        RFC_6570.Variable(dictionary: dict)
+    }
 }
 
 extension RFC_6570.Variable: ExpressibleByStringLiteral {
